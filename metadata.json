@@ -1,0 +1,6 @@
+{
+  "name": "Real Estate Management System",
+  "description": "A comprehensive real estate SaaS management platform with Supabase PostgreSQL integration, property leasing/sales billing options, dynamic telemetry, and dedicated role-based dashboards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

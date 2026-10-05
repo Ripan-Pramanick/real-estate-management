@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Domus OS Premium Light Mode Overrides */
+.theme-light {
+  background-color: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+/* Base backgrounds */
+.theme-light .bg-\[\#09090b\],
+.theme-light .bg-zinc-950,
+.theme-light .bg-black,
+.theme-light .bg-\[\#141416\],
+.theme-light .bg-\[\#09090b\]\/40 {
+  background-color: #f4f4f5 !important;
+}
+
+/* Sidebar, Header, Cards, and dropdowns */
+.theme-light .bg-\[\#111114\],
+.theme-light .bg-\[\#141417\],
+.theme-light .bg-zinc-900,
+.theme-light .bg-\[\#18181b\],
+.theme-light .bg-zinc-850,
+.theme-light .bg-zinc-900\/50,
+.theme-light .bg-zinc-900\/40,
+.theme-light .bg-zinc-950\/40,
+.theme-light .bg-zinc-900\/80 {
+  background-color: #ffffff !important;
+}
+
+/* Secondary interactive items or accents */
+.theme-light .bg-zinc-800,
+.theme-light .bg-zinc-800\/60,
+.theme-light .bg-zinc-850\/60 {
+  background-color: #e4e4e7 !important;
+}
+
+/* Active tab state override */
+.theme-light .bg-zinc-800.text-white {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+/* Text color adaptations */
+.theme-light .text-white,
+.theme-light .text-zinc-100,
+.theme-light .text-zinc-200 {
+  color: #09090b !important;
+}
+
+.theme-light .text-zinc-300,
+.theme-light .text-zinc-400 {
+  color: #27272a !important;
+}
+
+.theme-light .text-zinc-500 {
+  color: #71717a !important;
+}
+
+/* Borders */
+.theme-light .border-zinc-800,
+.theme-light .border-zinc-850,
+.theme-light .border-zinc-900,
+.theme-light .border-zinc-800\/80,
+.theme-light .border-zinc-850\/60 {
+  border-color: #e4e4e7 !important;
+}
+
+/* Hover effects */
+.theme-light button:hover {
+  filter: brightness(0.95);
+}
+
+/* Form fields, inputs, and selectors */
+.theme-light input, 
+.theme-light select, 
+.theme-light textarea {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: #d4d4d8 !important;
+}
+
+.theme-light input::placeholder,
+.theme-light textarea::placeholder {
+  color: #a1a1aa !important;
+}
+
+/* Dropdown Option element styling */
+.theme-light option {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+}
+
+/* Gantt and calendar elements */
+.theme-light .bg-zinc-900\/20 {
+  background-color: #f4f4f5 !important;
+}
+
+/* Overdue, Pending and success badges override */
+.theme-light .bg-emerald-950\/40 {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+  border-color: #a7f3d0 !important;
+}
+
+.theme-light .bg-red-950\/40 {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  border-color: #fca5a5 !important;
+}
+
+.theme-light .bg-amber-950\/40 {
+  background-color: #fef3c7 !important;
+  color: #92400e !important;
+  border-color: #fde68a !important;
+}
+
+/* Recharts Tooltip custom override for visibility in light mode */
+.theme-light .recharts-default-tooltip {
+  background-color: #ffffff !important;
+  border-color: #e4e4e7 !important;
+  color: #18181b !important;
+}
