@@ -48,9 +48,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           { id: 'overview', label: 'Executive Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
           { id: 'projects', label: 'Projects & Construction', icon: <HardHat className="w-4 h-4" /> },
           { id: 'employees', label: 'Employee Roster', icon: <Users className="w-4 h-4" /> },
-          { id: 'assets', label: 'Assets & Machinery', icon: <Wrench className="w-4 h-4" /> },
+          
+          { id: 'vendors', label: 'Logistics & Vendors', icon: <Truck className="w-4 h-4" /> },{ id: 'assets', label: 'Assets & Machinery', icon: <Wrench className="w-4 h-4" /> },
           { id: 'materials', label: 'Materials & Stocks', icon: <Boxes className="w-4 h-4" /> },
-          { id: 'vendors', label: 'Logistics & Vendors', icon: <Truck className="w-4 h-4" /> },
+          
           // { id: 'properties', label: 'Built Spaces & Apts', icon: <Building2 className="w-4 h-4" /> },
           { id: 'expenses', label: 'Expenses & Ledger', icon: <DollarSign className="w-4 h-4" /> },
           { id: 'billing', label: 'Property Billing', icon: <Receipt className="w-4 h-4" /> },
