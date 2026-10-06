@@ -107,6 +107,7 @@ export default function App() {
 
   const isBasicPlan = activeTenant?.subscriptionPlan === 'Basic';
 
+  // UPDATED: Automatically tag data with the correct tenant_id
   const toDB = (obj: any) => {
     if (!obj) return obj;
     const dbObj: any = {};
@@ -122,6 +123,12 @@ export default function App() {
         }
       }
     }
+    
+    // Inject tenant_id for regular users
+    if (currentUser?.role !== 'SuperAdmin' && activeTenant?.id) {
+      dbObj['tenant_id'] = activeTenant.id;
+    }
+    
     return dbObj;
   };
 
@@ -200,21 +207,36 @@ export default function App() {
           supabase.from('user_profiles').select('*')
         ]);
 
-        if (prj.data) setProjects(prj.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, startDate: d.start_date || d.startDate, endDate: d.end_date || d.endDate, siteSupervisor: d.site_supervisor || d.siteSupervisor, safetyRating: d.safety_rating || d.safetyRating })));
-        if (emp.data) setEmployees(emp.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, joiningDate: d.joining_date || d.joiningDate, assignedProject: d.assigned_project || d.assignedProject })));
-        if (ast.data) setAssets(ast.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, purchaseDate: d.purchase_date || d.purchaseDate, lastServiceDate: d.last_service_date || d.lastServiceDate, assignedProject: d.assigned_project || d.assignedProject })));
-        if (exp.data) setExpenses(exp.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectName: d.project_name || d.projectName })));
-        if (apt.data) setApartments(apt.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, areaSqft: d.area_sq_ft || d.area_sqft || d.areaSqft, tenantName: d.tenant_name || d.tenantName, leaseStart: d.lease_start || d.leaseStart, leaseEnd: d.lease_end || d.leaseEnd, monthlyRent: d.monthly_rent || d.monthlyRent })));
-        if (mat.data) setMaterials(mat.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, minStockLevel: d.min_stock_level || d.minStockLevel, unitPrice: d.unit_price || d.unitPrice, supplierName: d.supplier_name || d.supplierName, lastUpdated: d.last_updated || d.lastUpdated })));
-        if (ven.data) setVendors(ven.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, contactPerson: d.contact_person || d.contactPerson, suppliedItems: d.supplied_items || d.suppliedItems, activeContractsCount: d.active_contracts_count || d.activeContractsCount })));
-        if (not.data) setNotifications(not.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId })));
-        if (bil.data) setBills(bil.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, billNumber: d.bill_number || d.billNumber, apartmentId: d.apartment_id || d.apartmentId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, propertyType: d.property_type || d.propertyType, billingType: d.billing_type || d.billingType, customerName: d.customer_name || d.customerName, customerEmail: d.customer_email || d.customerEmail, dueDate: d.due_date || d.dueDate, issuedDate: d.issued_date || d.issuedDate, paymentMethod: d.payment_method || d.paymentMethod })));
-        if (ten.data) setSaasTenants(ten.data.map((d: any) => ({ ...d, companyName: d.company_name || d.companyName, adminName: d.admin_name || d.adminName, adminEmail: d.admin_email || d.adminEmail, subscriptionPlan: d.subscription_plan || d.subscriptionPlan, purchaseAmount: d.purchase_amount || d.purchaseAmount, purchaseDate: d.purchase_date || d.purchaseDate, expiryDate: d.expiry_date || d.expiryDate, propertiesLimit: d.properties_limit || d.propertiesLimit, projectsLimit: d.projects_limit || d.projectsLimit, contactPhone: d.contact_phone || d.contactPhone, billingCycle: d.billing_cycle || d.billingCycle })));
-        if (tck.data) setMaintenanceTickets(tck.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, apartmentId: d.apartment_id || d.apartmentId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, tenantName: d.tenant_name || d.tenantName, tenantEmail: d.tenant_email || d.tenantEmail, createdAt: d.created_at || d.createdAt, slaDeadline: d.sla_deadline || d.slaDeadline, assignedStaff: d.assigned_staff || d.assignedStaff, resolutionNotes: d.resolution_notes || d.resolutionNotes })));
-        if (tnd.data) setTenders(tnd.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectName: d.project_name || d.projectName, dueDate: d.due_date || d.dueDate, awardedBidId: d.awarded_bid_id || d.awardedBidId })));
-        if (mls.data) setProjectMilestones(mls.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectId: d.project_id || d.projectId, targetDate: d.due_date || d.targetDate, isCompleted: d.status === 'Completed' || d.isCompleted })));
-        if (gnt.data) setGanttTasks(gnt.data.map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectId: d.project_id || d.projectId, startDate: d.start_date || d.startDate, endDate: d.end_date || d.endDate })));
-        if (usr.data) setUserProfiles(usr.data.map((d: any) => ({ ...d, passwordDescription: d.password_description || d.passwordDescription, colorClass: d.color_class || d.colorClass })));
+        // UPDATED: Frontend Filtering Logic
+        const isSuperAdmin = currentUser.role === 'SuperAdmin';
+        let myTenantId = 'TEN-001';
+        
+        if (!isSuperAdmin && ten.data) {
+           const myT = ten.data.find((t: any) => t.admin_email?.toLowerCase() === currentUser.email.toLowerCase());
+           if (myT) myTenantId = myT.id;
+        }
+
+        const filterData = (dataList: any[]) => {
+           if (!dataList) return [];
+           if (isSuperAdmin) return dataList;
+           return dataList.filter(d => d.tenant_id === myTenantId || d.id === myTenantId);
+        };
+
+        if (prj.data) setProjects(filterData(prj.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, startDate: d.start_date || d.startDate, endDate: d.end_date || d.endDate, siteSupervisor: d.site_supervisor || d.siteSupervisor, safetyRating: d.safety_rating || d.safetyRating })));
+        if (emp.data) setEmployees(filterData(emp.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, joiningDate: d.joining_date || d.joiningDate, assignedProject: d.assigned_project || d.assignedProject })));
+        if (ast.data) setAssets(filterData(ast.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, purchaseDate: d.purchase_date || d.purchaseDate, lastServiceDate: d.last_service_date || d.lastServiceDate, assignedProject: d.assigned_project || d.assignedProject })));
+        if (exp.data) setExpenses(filterData(exp.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectName: d.project_name || d.projectName })));
+        if (apt.data) setApartments(filterData(apt.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, areaSqft: d.area_sq_ft || d.area_sqft || d.areaSqft, tenantName: d.tenant_name || d.tenantName, leaseStart: d.lease_start || d.leaseStart, leaseEnd: d.lease_end || d.leaseEnd, monthlyRent: d.monthly_rent || d.monthlyRent })));
+        if (mat.data) setMaterials(filterData(mat.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, minStockLevel: d.min_stock_level || d.minStockLevel, unitPrice: d.unit_price || d.unitPrice, supplierName: d.supplier_name || d.supplierName, lastUpdated: d.last_updated || d.lastUpdated })));
+        if (ven.data) setVendors(filterData(ven.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, contactPerson: d.contact_person || d.contactPerson, suppliedItems: d.supplied_items || d.suppliedItems, activeContractsCount: d.active_contracts_count || d.activeContractsCount })));
+        if (not.data) setNotifications(filterData(not.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId })));
+        if (bil.data) setBills(filterData(bil.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, billNumber: d.bill_number || d.billNumber, apartmentId: d.apartment_id || d.apartmentId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, propertyType: d.property_type || d.propertyType, billingType: d.billing_type || d.billingType, customerName: d.customer_name || d.customerName, customerEmail: d.customer_email || d.customerEmail, dueDate: d.due_date || d.dueDate, issuedDate: d.issued_date || d.issuedDate, paymentMethod: d.payment_method || d.paymentMethod })));
+        if (ten.data) setSaasTenants(filterData(ten.data).map((d: any) => ({ ...d, companyName: d.company_name || d.companyName, adminName: d.admin_name || d.adminName, adminEmail: d.admin_email || d.adminEmail, subscriptionPlan: d.subscription_plan || d.subscriptionPlan, purchaseAmount: d.purchase_amount || d.purchaseAmount, purchaseDate: d.purchase_date || d.purchaseDate, expiryDate: d.expiry_date || d.expiryDate, propertiesLimit: d.properties_limit || d.propertiesLimit, projectsLimit: d.projects_limit || d.projectsLimit, contactPhone: d.contact_phone || d.contactPhone, billingCycle: d.billing_cycle || d.billingCycle })));
+        if (tck.data) setMaintenanceTickets(filterData(tck.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, apartmentId: d.apartment_id || d.apartmentId, buildingName: d.building_name || d.buildingName, unitNumber: d.unit_number || d.unitNumber, tenantName: d.tenant_name || d.tenantName, tenantEmail: d.tenant_email || d.tenantEmail, createdAt: d.created_at || d.createdAt, slaDeadline: d.sla_deadline || d.slaDeadline, assignedStaff: d.assigned_staff || d.assignedStaff, resolutionNotes: d.resolution_notes || d.resolutionNotes })));
+        if (tnd.data) setTenders(filterData(tnd.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectName: d.project_name || d.projectName, dueDate: d.due_date || d.dueDate, awardedBidId: d.awarded_bid_id || d.awardedBidId })));
+        if (mls.data) setProjectMilestones(filterData(mls.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectId: d.project_id || d.projectId, targetDate: d.due_date || d.targetDate, isCompleted: d.status === 'Completed' || d.isCompleted })));
+        if (gnt.data) setGanttTasks(filterData(gnt.data).map((d: any) => ({ ...d, tenantId: d.tenant_id || d.tenantId, projectId: d.project_id || d.projectId, startDate: d.start_date || d.startDate, endDate: d.end_date || d.endDate })));
+        if (usr.data) setUserProfiles(filterData(usr.data).map((d: any) => ({ ...d, passwordDescription: d.password_description || d.passwordDescription, colorClass: d.color_class || d.colorClass })));
         
       } catch (error) {
         showToast('Data synchronization failed.', 'alert');

@@ -51,10 +51,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           { id: 'assets', label: 'Assets & Machinery', icon: <Wrench className="w-4 h-4" /> },
           { id: 'materials', label: 'Materials & Stocks', icon: <Boxes className="w-4 h-4" /> },
           { id: 'vendors', label: 'Logistics & Vendors', icon: <Truck className="w-4 h-4" /> },
-          { id: 'properties', label: 'Built Spaces & Apts', icon: <Building2 className="w-4 h-4" /> },
+          // { id: 'properties', label: 'Built Spaces & Apts', icon: <Building2 className="w-4 h-4" /> },
           { id: 'expenses', label: 'Expenses & Ledger', icon: <DollarSign className="w-4 h-4" /> },
           { id: 'billing', label: 'Property Billing', icon: <Receipt className="w-4 h-4" /> },
-          { id: 'saas-hub', label: 'Supabase DB Hub', icon: <Database className="w-4 h-4" /> },
+          // { id: 'saas-hub', label: 'Supabase DB Hub', icon: <Database className="w-4 h-4" /> },
         ];
         break;
       case 'ProjectManager':

@@ -265,6 +265,9 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({
                       Simulate Other Systems
                     </div>
                     {rolesList.map((role) => {
+                      if (role.value === 'SuperAdmin' && currentUser.email !== 'demo@mail.in') {
+                        return null;
+                      }
                       const isActive = currentUser.role === role.value;
                       return (
                         <button
